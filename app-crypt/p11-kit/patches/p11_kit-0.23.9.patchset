@@ -1,0 +1,42 @@
+From ac55532fea6b49d57372934455e4781ee4f33183 Mon Sep 17 00:00:00 2001
+From: sfanxiang <sfanxiang@gmail.com>
+Date: Tue, 2 Jan 2018 12:51:02 +0000
+Subject: port to Haiku
+
+
+diff --git a/common/unix-peer.c b/common/unix-peer.c
+index 7fe2eea..f4c6789 100644
+--- a/common/unix-peer.c
++++ b/common/unix-peer.c
+@@ -41,7 +41,6 @@
+ #include <sys/socket.h>
+ #include <sys/un.h>
+ #include <sys/uio.h>
+-#include <sys/errno.h>
+ 
+ #ifdef HAVE_UCRED_H
+ #  include <ucred.h>
+diff --git a/p11-kit/server.c b/p11-kit/server.c
+index 97e18e2..9c2a0e0 100644
+--- a/p11-kit/server.c
++++ b/p11-kit/server.c
+@@ -55,6 +55,7 @@
+ #include <grp.h>
+ #include <pwd.h>
+ #include <signal.h>
++#include <sys/select.h>
+ #include <sys/socket.h>
+ #include <sys/types.h>
+ #include <sys/un.h>
+@@ -266,7 +267,7 @@ create_socket (const char *address,
+ 	}
+ 
+ 	umask (066);
+-	rc = bind (sd, (struct sockaddr *)&sa, SUN_LEN (&sa));
++	rc = bind (sd, (struct sockaddr *)&sa, sizeof(sa));
+ 	if (rc == -1) {
+ 		p11_message_err (errno, "could not create socket %s", socket_file);
+ 		return -1;
+-- 
+2.15.0
+
