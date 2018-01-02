@@ -64,7 +64,9 @@ GLOBAL_WRITABLE_FILES="
 
 BUILD()
 {
+	# TODO remove -g3
 	runConfigure ./configure \
+		CFLAGS="-g3" \
 		LDFLAGS="-lnetwork" \
 		--with-trust-paths="${dataRootDir}/ssl/CARootCertificates.pem" \
 		--with-user-config="~/config/settings/pkcs11"
