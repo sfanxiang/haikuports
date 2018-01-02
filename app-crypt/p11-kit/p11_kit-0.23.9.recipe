@@ -26,6 +26,7 @@ PROVIDES="
 
 REQUIRES="
 	haiku
+	ca_root_certificates
 	lib:libtasn1
 	lib:libffi
 	"
@@ -65,7 +66,7 @@ BUILD()
 {
 	runConfigure ./configure \
 		LDFLAGS="-lnetwork" \
-		--with-trust-paths="/system/data/ssl/CARootCertificates.pem" \
+		--with-trust-paths="${dataRootDir}/ssl/CARootCertificates.pem" \
 		--with-user-config="~/config/settings/pkcs11"
 	make $jobArgs
 }
