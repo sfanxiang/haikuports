@@ -1,4 +1,4 @@
-From ac55532fea6b49d57372934455e4781ee4f33183 Mon Sep 17 00:00:00 2001
+From 4dd60c708d56241d1b1b4b0c1cf3dbd2328f6db3 Mon Sep 17 00:00:00 2001
 From: sfanxiang <sfanxiang@gmail.com>
 Date: Tue, 2 Jan 2018 12:51:02 +0000
 Subject: port to Haiku
@@ -37,6 +37,29 @@ index 97e18e2..9c2a0e0 100644
  	if (rc == -1) {
  		p11_message_err (errno, "could not create socket %s", socket_file);
  		return -1;
+-- 
+2.15.0
+
+
+From 8827f371d6496dfd681b2af7d4a548c5cfc6bab6 Mon Sep 17 00:00:00 2001
+From: sfanxiang <sfanxiang@gmail.com>
+Date: Tue, 2 Jan 2018 14:38:35 +0000
+Subject: fix frob_setuid dependency
+
+
+diff --git a/Makefile.in b/Makefile.in
+index a2b1553..e8d5f83 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -549,7 +549,7 @@ am_frob_setuid_OBJECTS = p11-kit/frob-setuid.$(OBJEXT)
+ frob_setuid_OBJECTS = $(am_frob_setuid_OBJECTS)
+ am__DEPENDENCIES_6 = libp11-kit-testable.la libp11-test.la \
+ 	libp11-common.la $(am__DEPENDENCIES_1)
+-frob_setuid_DEPENDENCIES = $(am__DEPENDENCIES_6)
++frob_setuid_DEPENDENCIES = $(am__DEPENDENCIES_6) libp11-library.la
+ am__frob_token_SOURCES_DIST = trust/frob-token.c
+ @WITH_TRUST_MODULE_TRUE@am_frob_token_OBJECTS =  \
+ @WITH_TRUST_MODULE_TRUE@	trust/frob_token-frob-token.$(OBJEXT)
 -- 
 2.15.0
 

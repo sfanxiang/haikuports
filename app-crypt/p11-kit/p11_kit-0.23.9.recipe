@@ -18,7 +18,10 @@ ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
 
 PROVIDES="
 	p11_kit = $portVersion
-	cmd:p11_kit = $portVersion	# TODO
+	cmd:p11_kit = $portVersion
+	cmd:trust = $portVersion
+	lib:libp11_kit = $portVersion
+	lib:p11_kit_proxy = $portVersion
 	"
 
 REQUIRES="
@@ -40,6 +43,7 @@ BUILD_PREREQUIRES="
 	cmd:automake
 	cmd:autoreconf
 	cmd:awk
+	cmd:find
 	cmd:gcc
 	cmd:grep
 	cmd:ld
@@ -50,18 +54,31 @@ BUILD_PREREQUIRES="
 	"
 
 USER_SETTINGS_FILES="
-	settings/pkcs11
+	settings/pkcs11 directory
+	"
+
+GLOBAL_WRITABLE_FILES="
+	settings/pkcs11 directory keep-old
 	"
 
 BUILD()
 {
-	echo $settingsDir
-	runConfigure ./configure LDFLAGS="-lnetwork" --with-trust-paths="/system/data/ssl/CARootCertificates.pem" --with-user-config="~/config/settings/pkcs11"
-	# TODO: --pkgdatadir=$dataDir	?
+	runConfigure ./configure \
+		LDFLAGS="-lnetwork" \
+		--with-trust-paths="/system/data/ssl/CARootCertificates.pem" \
+		--with-user-config="~/config/settings/pkcs11"
 	make $jobArgs
 }
 
 INSTALL()
 {
 	make install
+
+	# clean up
+	rm ${libDir}/*.la
+	rm ${libDir}/pkcs11/*.la
+
+	# put pkgconfig into the right location
+	mkdir -p ${developLibDir}
+	mv ${libDir}/pkgconfig ${developLibDir}
 }
