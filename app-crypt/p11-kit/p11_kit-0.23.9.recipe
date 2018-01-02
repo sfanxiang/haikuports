@@ -1,0 +1,60 @@
+SUMMARY="Provides a way to load and enumerate PKCS#11 modules"
+DESCRIPTION="p11-kit provides a way to load and enumerate PKCS#11 modules. \
+Provides a standard configuration setup for installing PKCS#11 modules \
+in such a way that they're discoverable."
+HOMEPAGE="https://p11-glue.freedesktop.org/p11-kit.html"
+COPYRIGHT="2017 Red Hat, Inc."
+LICENSE="BSD (3-clause)"
+REVISION="1"
+SOURCE_URI="https://github.com/p11-glue/p11-kit/releases/download/0.23.9/p11-kit-0.23.9.tar.gz"
+CHECKSUM_SHA256="e1c1649c335107a8d33cf3762eb7f57b2d0681f0c7d8353627293a58d6b4db63"
+
+PATCHES="
+	p11_kit-$portVersion.patchset
+	"
+
+ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
+
+PROVIDES="
+	p11_kit = $portVersion
+	cmd:p11_kit = $portVersion	# TODO
+	"
+
+REQUIRES="
+	haiku
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
+	"
+
+BUILD_PREREQUIRES="
+	cmd:aclocal
+	cmd:autoconf
+	cmd:autom4te
+	cmd:automake
+	cmd:autoreconf
+	cmd:awk
+	cmd:gcc
+	cmd:grep
+	cmd:ld
+	cmd:make
+	cmd:makeinfo
+	cmd:pkg_config
+	cmd:sed
+	lib:libtasn1
+	lib:libffi
+	devel:libtasn1_devel
+	devel:libffi_devel
+	"
+
+BUILD()
+{
+	runConfigure ./configure
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+}
