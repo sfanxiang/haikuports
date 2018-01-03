@@ -6,37 +6,42 @@ HOMEPAGE="https://p11-glue.freedesktop.org/p11-kit.html"
 COPYRIGHT="2017 Red Hat, Inc."
 LICENSE="BSD (3-clause)"
 REVISION="1"
-SOURCE_URI="https://github.com/p11-glue/p11-kit/releases/download/0.23.9/p11-kit-0.23.9.tar.gz"
+SOURCE_URI="https://github.com/p11-glue/p11-kit/releases/download/$portVersion/p11-kit-$portVersion.tar.gz"
 CHECKSUM_SHA256="e1c1649c335107a8d33cf3762eb7f57b2d0681f0c7d8353627293a58d6b4db63"
 SOURCE_DIR="p11-kit-$portVersion"
+PATCHES="p11_kit-$portVersion.patchset"
 
-PATCHES="
-	p11_kit-$portVersion.patchset
-	"
-
-ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
+ARCHITECTURES="!x86_gcc2 ?x86 x86_64"
+SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
-	p11_kit = $portVersion
-	cmd:p11_kit = $portVersion
-	cmd:trust = $portVersion
-	lib:libp11_kit = $portVersion
-	lib:p11_kit_proxy = $portVersion
+	p11_kit$secondaryArchSuffix = $portVersion
+	cmd:p11_kit$secondaryArchSuffix = $portVersion
+	cmd:trust$secondaryArchSuffix = $portVersion
+	lib:libp11_kit$secondaryArchSuffix = $portVersion
+	lib:p11_kit_proxy$secondaryArchSuffix = $portVersion
+	"
+REQUIRES="
+	haiku$secondaryArchSuffix
+	ca_root_certificates
+	lib:libtasn1$secondaryArchSuffix
+	lib:libffi$secondaryArchSuffix
 	"
 
-REQUIRES="
-	haiku
-	ca_root_certificates
-	lib:libtasn1
-	lib:libffi
+PROVIDES_devel="
+	p11_kit${secondaryArchSuffix}_devel = $portVersion
+	devel:libp11_kit$secondaryArchSuffix = $portVersion
+	devel:p11_kit_proxy$secondaryArchSuffix = $portVersion
+	"
+REQUIRES_devel="
+	p11_kit$secondaryArchSuffix == $portVersion base
 	"
 
 BUILD_REQUIRES="
-	haiku_devel
-	devel:libtasn1
-	devel:libffi
+	haiku${secondaryArchSuffix}_devel
+	devel:libtasn1$secondaryArchSuffix
+	devel:libffi$secondaryArchSuffix
 	"
-
 BUILD_PREREQUIRES="
 	cmd:aclocal
 	cmd:autoconf
@@ -45,12 +50,12 @@ BUILD_PREREQUIRES="
 	cmd:autoreconf
 	cmd:awk
 	cmd:find
-	cmd:gcc
+	cmd:gcc$secondaryArchSuffix
 	cmd:grep
-	cmd:ld
+	cmd:ld$secondaryArchSuffix
 	cmd:make
 	cmd:makeinfo
-	cmd:pkg_config
+	cmd:pkg_config$secondaryArchSuffix
 	cmd:sed
 	"
 
@@ -59,17 +64,19 @@ USER_SETTINGS_FILES="
 	"
 
 GLOBAL_WRITABLE_FILES="
-	settings/pkcs11 directory keep-old
+	settings/pkcs11/pkcs11.conf.example keep-old
 	"
 
 BUILD()
 {
+	certsInstallDir="$portPackageLinksDir/ca_root_certificates"
+	certsDir="$certsInstallDir/$relativeDataRootDir/ssl"
 	# TODO remove -g3
 	runConfigure ./configure \
 		CFLAGS="-g3" \
 		LDFLAGS="-lnetwork" \
-		--with-trust-paths="${dataRootDir}/ssl/CARootCertificates.pem" \
-		--with-user-config="~/config/settings/pkcs11"
+		--with-trust-paths="${certsDir}/CARootCertificates.pem" \
+		--with-user-config="`finddir B_USER_SETTINGS_DIRECTORY`/pkcs11"
 	make $jobArgs
 }
 
@@ -78,10 +85,14 @@ INSTALL()
 	make install
 
 	# clean up
-	rm ${libDir}/*.la
-	rm ${libDir}/pkcs11/*.la
+	rm -f $libDir/*.la
+	rm -f $libDir/pkcs11/*.la
+	
+	prepareInstalledDevelLibs \
+		libp11-kit \
+		p11-kit-proxy
+	fixPkgconfig
 
-	# put pkgconfig into the right location
-	mkdir -p ${developLibDir}
-	mv ${libDir}/pkgconfig ${developLibDir}
+	packageEntries devel \
+		$developDir
 }
