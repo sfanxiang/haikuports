@@ -6,8 +6,8 @@ HOMEPAGE="https://www.musicpd.org/"
 COPYRIGHT="2003-2017 The Music Player Daemon Project"
 LICENSE="GNU GPL v2"
 REVISION="1"
-SOURCE_URI="http://www.musicpd.org/download/mpd/0.20/mpd-$portVersion.tar.xz"
-CHECKSUM_SHA256="46c1c534d80a52de00263e8ef43a6011ff9d765232443749539ef26b1b48ff40"
+SOURCE_URI="https://github.com/sfanxiang/MPD/archive/haiku-build.zip"
+SOURCE_DIR="MPD-haiku-build"
 PATCHES="mpd-$portVersion.patchset"
 
 ARCHITECTURES="!x86_gcc2 x86 x86_64"
@@ -130,6 +130,7 @@ BUILD_REQUIRES="
 	"
 BUILD_PREREQUIRES="
 	cmd:autoconf
+	cmd:automake
 #	cmd:avahi_client$secondaryArchSuffix
 	cmd:awk
 	cmd:find
@@ -147,7 +148,8 @@ BUILD_PREREQUIRES="
 
 BUILD()
 {
-	runConfigure ./configure
+	# NOCONFIGURE=1 ./autogen.sh
+	# runConfigure ./configure
 
 	make $jobArgs
 }
