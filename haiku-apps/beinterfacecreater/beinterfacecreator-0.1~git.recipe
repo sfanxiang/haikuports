@@ -1,0 +1,42 @@
+SUMMARY="A GUI designer"
+DESCRIPTION="BeInterfaceCreator is a GUI designer which runs on Haiku."
+HOMEPAGE="https://github.com/HaikuArchives/BeInterfaceCreator"
+COPYRIGHT="2001 Siegfried Soft"
+LICENSE="GPL v2"
+REVISION="1"
+srcGitRev="f380dce89a78e2dd87f534ec6d08e500652c4486'
+SOURCE_URI="https://github.com/HaikuArchives/BeInterfaceCreator/archive/$srcGitRev.tar.gz"
+
+# PATCHES="beinterfacecreator-$portVersion.patchset"
+
+ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
+
+PROVIDES="
+	beinterfacecreator = $portVersion
+	app:beinterfacecreator = $portVersion
+	"
+REQUIRES="
+	haiku
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
+	"
+
+BUILD_PREREQUIRES="
+	makefile_engine
+	cmd:gcc
+	cmd:g++
+	cmd:ld
+	cmd:make
+	"
+
+BUILD()
+{
+	make $jobArgs
+}
+
+INSTALL()
+{
+	make install
+}
