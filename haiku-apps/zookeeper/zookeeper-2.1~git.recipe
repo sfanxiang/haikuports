@@ -1,0 +1,46 @@
+SUMMARY="A frontend to execute shell commands on files"
+DESCRIPTION="ZooKeeper is a glue application (or frontend) that lets you \
+specify a shell command or script to be executed on a set \
+of files."
+HOMEPAGE="https://github.com/HaikuArchives/ZooKeeper"
+COPYRIGHT="2004, 2005 Jonas Sundstrom"
+LICENSE="Public Domain"
+REVISION="1"
+srcGitRev="c2ab819d0d7dfacf2292d6f381e1be84dcbacbe1"
+SOURCE_URI="https://github.com/HaikuArchives/ZooKeeper/archive/$srcGitRev.tar.gz"
+SOURCE_FILENAME="zookeeper-portVersion-$srcGitRev.tar.gz"
+SOURCE_DIR="zookeeper-$srcGitRev"
+#PATCHES="zookeeper-$portVersion.patchset"
+
+ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
+
+PROVIDES="
+	zookeeper = $portVersion
+	app:ZooKeeper = $portVersion
+	"
+REQUIRES="
+	haiku
+	"
+
+BUILD_REQUIRES="
+	haiku_devel
+	"
+BUILD_PREREQUIRES="
+	cmd:g++
+	cmd:gcc
+	cmd:ld
+	"
+
+BUILD()
+{
+	g++ -o ZooKeeper Source/*.cpp -lbe
+}
+
+INSTALL()
+{
+	addResourcesToBinaries \
+		Source/ZooKeeper.rsrc \
+		ZooKeeper
+	install -d $binDir
+	install ZooKeeper $binDir
+}
