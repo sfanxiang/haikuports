@@ -8,9 +8,10 @@ LICENSE="Public Domain"
 REVISION="1"
 srcGitRev="c2ab819d0d7dfacf2292d6f381e1be84dcbacbe1"
 SOURCE_URI="https://github.com/HaikuArchives/ZooKeeper/archive/$srcGitRev.tar.gz"
-SOURCE_FILENAME="zookeeper-portVersion-$srcGitRev.tar.gz"
-SOURCE_DIR="zookeeper-$srcGitRev"
-#PATCHES="zookeeper-$portVersion.patchset"
+CHECKSUM_SHA256="a9cc4aea388aec02cfc897a5927a495de55ad3ab7e04af7d89f4c595a45d8b08"
+SOURCE_FILENAME="zookeeper-$portVersion-$srcGitRev.tar.gz"
+SOURCE_DIR="ZooKeeper-$srcGitRev"
+PATCHES="zookeeper-$portVersion.patchset"
 
 ARCHITECTURES="?x86_gcc2 ?x86 x86_64"
 
@@ -38,9 +39,8 @@ BUILD()
 
 INSTALL()
 {
-	addResourcesToBinaries \
-		Source/ZooKeeper.rsrc \
-		ZooKeeper
-	install -d $binDir
-	install ZooKeeper $binDir
+	xres -o ZooKeeper Source/ZooKeeper.rsrc
+	install -d $appsDir
+	install ZooKeeper $appsDir
+	addAppDeskbarSymlink $appsDir/ZooKeeper
 }
